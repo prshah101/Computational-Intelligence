@@ -310,18 +310,6 @@ def display_visual(graph_data, user_input, algorithm=None, problem=None):
 
     if user_input is True:
         node_colors = dict(initial_node_colors)
-        if isinstance(algorithm, dict):
-            assert set(algorithm.keys()).issubset({"Breadth First Search",
-                                                   "Depth First Search",})
-
-            algo_dropdown = widgets.Dropdown(description="Search algorithm: ",
-                                             options=sorted(list(algorithm.keys())),
-                                             value="Breadth First Tree Search")
-            display(algo_dropdown)
-        elif algorithm is None:
-            print("No algorithm to run.")
-            return 0
-
         def slider_callback(iteration):
             # don't show graph for the first time running the cell calling this function
             try:
@@ -336,9 +324,7 @@ def display_visual(graph_data, user_input, algorithm=None, problem=None):
                 problem = GraphProblem(start_dropdown.value, end_dropdown.value, local_map)
                 global all_node_colors
 
-                user_algorithm = algorithm[algo_dropdown.value]
-
-                iterations, all_node_colors, node = user_algorithm(problem)
+                iterations, all_node_colors, node = algorithm(problem)
                 solution = node.solution()
                 all_node_colors.append(final_path_colors(all_node_colors[0], problem, solution))
 
@@ -349,11 +335,11 @@ def display_visual(graph_data, user_input, algorithm=None, problem=None):
                     time.sleep(.5)
 
         start_dropdown = widgets.Dropdown(description="Start location: ",
-                                          options=sorted(list(node_colors.keys())), value="A")
+                                          options=sorted(list(node_colors.keys())), value="Cranbourne_Park_Shopping_Centre")
         display(start_dropdown)
 
         end_dropdown = widgets.Dropdown(description="Goal location: ",
-                                        options=sorted(list(node_colors.keys())), value="F")
+                                        options=sorted(list(node_colors.keys())), value="Royal_Gardens")
         display(end_dropdown)
 
         button = widgets.ToggleButton(value=False)
@@ -529,10 +515,7 @@ def astar_search(problem, h=None):
     return(iterations, all_node_colors, node)
 
 all_node_colors = []
-#startLocation = input("Starting Location?: ")   #start point input
-#endLocation = input("Destination?: ")   #end point input
-#local_problem = GraphProblem(startLocation, endLocation, local_map)
 local_problem = GraphProblem('Cranbourne_Park_Shopping_Centre', 'Royal_Gardens', local_map)
-display_visual(local_graph_data, user_input=False,
+display_visual(local_graph_data, user_input=True,
                algorithm=astar_search,
                problem=local_problem)
